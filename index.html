@@ -17,16 +17,18 @@
     .bulb {
       width: 150px;
       height: 150px;
-      background-color: #444;
-      border-radius: 50px;
+      background-color: #444; /* শুরুতে লাইট বন্ধ (ধূসর) থাকবে */
+      border-radius: 50%; /* পুরোপুরি গোল করার জন্য ৫০% দেওয়া ভালো */
       margin-bottom: 40px;
       transition: all 0.3s ease;
       box-shadow: 0 0 0px transparent;
     }
+    
+    /* .bulb.on থেকে কালার বাদ দিয়ে শুধু গ্লো ইফেক্ট সক্রিয় রাখার বেসিক স্টাইল */
     .bulb.on {
-      background-color: #ffdf00;
-      box-shadow: 0 0 50px #ffdf00, 0 0 100px #ffdf00;
+      /* কালার এবং শ্যাডো জাভাস্ক্রিপ্ট দিয়ে ডাইনামিকালি সেট হবে */
     }
+
     .buttons {
       display: flex;
       gap: 40px;
@@ -45,26 +47,51 @@
     .off-btn {
       background-color: #dc3545; color: white;
     }
-    
   </style>
 </head>
 <body>
+
   <div class="bulb" id="lightBulb"></div>
+  
   <div class="buttons">
     <button class="on-btn" onclick="turnOn()">ON</button>
-   <button class="off-btn" onclick="turnOf()">OFF</button>
+    <button class="off-btn" onclick="turnOf()">OFF</button>
   </div>
+
   <script>
     const bulb = document.getElementById('lightBulb');
     
-    function turnOn() {
-      bulb.classList.add('on');
-   }
-
-   function turnOf() {
-      bulb.classList.remove('on');
+    // র্যান্ডম কালার তৈরি করার ফাংশন (যা অসংখ্য কালার তৈরি করতে পারে)
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
     }
-    
+
+    function turnOn() {
+      // যদি লাইট ইতিমধ্যে অন না থাকে, তবেই নতুন কালার দেবে
+      if (!bulb.classList.contains('on')) {
+        const newColor = getRandomColor(); // নতুন একটা কালার জেনারেট হবে
+        
+        bulb.classList.add('on');
+        
+        // জাভাস্ক্রিপ্ট দিয়ে সরাসরি স্টাইল চেঞ্জ করা
+        bulb.style.backgroundColor = newColor;
+        bulb.style.boxShadow = `0 0 50px ${newColor}, 0 0 100px ${newColor}`;
+      }
+    }
+
+    function turnOf() {
+      bulb.classList.remove('on');
+      
+      // লাইট অফ হলে কালার আবার আগের মতো অন্ধকার (#444) হয়ে যাবে এবং গ্লো চলে যাবে
+      bulb.style.backgroundColor = '#444';
+      bulb.style.boxShadow = '0 0 0px transparent';
+    }
   </script>
+
 </body>
 </html>
